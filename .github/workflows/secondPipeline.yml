@@ -1,0 +1,107 @@
+name: Develop Branch Pipeline
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Backend Dependencies
+        working-directory: ./node
+        run: |
+          npm install
+
+      - name: Install Frontend Dependencies
+        working-directory: ./react
+        run: |
+          npm install
+
+      - name: Build Backend Project
+        working-directory: ./node
+        run: |
+          npm run build
+
+      - name: Build Frontend Project
+        working-directory: ./react
+        run: |
+          npm run build
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Run Backend Unit Tests
+        working-directory: ./node
+        run: |
+          npm test
+
+      - name: Run Frontend Unit Tests
+        working-directory: ./react
+        run: |
+          npm test
+
+  sonar:
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: SonarQube Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          # Replace with your actual SonarQube scan command
+          echo "Running SonarQube scan here"
+          # Example command (adjust parameters as needed):
+          sonar-scanner \
+            -Dsonar.projectKey=your_project_key \
+            -Dsonar.sources=./ \
+            -Dsonar.host.url=https://your-sonarqube-server.com \
+            -Dsonar.login=$SONAR_TOKEN
+
+  integration-tests:
+    runs-on: ubuntu-latest
+    needs: sonar
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Run Backend Integration Tests
+        working-directory: ./node
+        run: |
+          npm run test:integration
+
+      - name: Run Frontend Integration Tests
+        working-directory: ./react
+        run: |
+          npm run test:integration
