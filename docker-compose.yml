@@ -3,6 +3,7 @@ version: '3'
 services: 
 
   backend:
+    mem_limit: 512m
     build: 
       context: ./node
     container_name: backend
@@ -16,7 +17,7 @@ services:
       - /usr/src/app/node_modules
     tty: true
     ports: 
-      - "3000:3000"
+      - "5000:5000"
     command: npm start
     depends_on:
        - db

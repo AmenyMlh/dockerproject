@@ -13,7 +13,7 @@
     "dev": "nodemon index.js",
     "start": "node index.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "build": "npm install && npm install --prefix client && npm run build --prefix client"
+    "build": "npm install && npm install --prefix ../react && npm run build --prefix ../react"
   },
   "keywords": [],
   "author": "",
