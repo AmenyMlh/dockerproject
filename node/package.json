@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test": "npx jest",
     "build": "npm install && npm install --prefix ../react && npm run build --prefix ../react"
   },
   "keywords": [],
